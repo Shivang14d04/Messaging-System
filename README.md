@@ -1,4 +1,4 @@
-# Aether Inbox - Email Management System
+# Aether Inbox - Messaging System
 
 Aether Inbox is a decoupled, modern email client featuring a Spring Boot RESTful backend powered by Apache Cassandra (DataStax Astra DB), Spring Security OAuth2 (GitHub/Google login), and a lightweight, light-themed React frontend.
 
