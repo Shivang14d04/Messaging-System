@@ -311,17 +311,41 @@ body {
   border-radius: 999px;
 }
 
+.unread-folder {
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+
+.folder-unread-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
 .sidebar.collapsed .folder-item {
   justify-content: center;
   padding: 0.75rem 0;
 }
 
-.sidebar.collapsed .folder-left span:not(.folder-dot) {
+.sidebar.collapsed .folder-left span {
   display: none;
 }
 
 .sidebar.collapsed .unread-badge {
   display: none;
+}
+
+/* Folder SVG Icons */
+.folder-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.folder-item.active .folder-icon {
+  color: var(--accent-primary);
 }
 
 .mail-list-pane {
@@ -357,13 +381,14 @@ body {
   gap: 0.25rem;
 }
 
+/* Default (Seen / Read) Email Row Style - Dull Background & Normal text */
 .mail-row-card {
   display: flex;
   align-items: center;
   padding: 0.85rem 1.25rem;
   border-radius: 8px;
   cursor: pointer;
-  background-color: var(--bg-surface);
+  background-color: #F3F4F6; /* Dull background */
   border: 1px solid var(--border-color);
   transition: var(--transition-fast);
   box-shadow: var(--shadow-sm);
@@ -374,21 +399,25 @@ body {
   border-color: var(--text-muted);
 }
 
+/* Unseen / Unread Email Row Style - Bold & White Background */
 .mail-row-card.unread {
-  border-left: 3px solid var(--accent-primary);
+  background-color: var(--bg-surface); /* Pure white background */
+  border-left: 4px solid var(--accent-primary); /* Bold indicator border */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .mail-sender {
   width: 180px;
-  font-weight: 500;
+  font-weight: 400; /* Regular font weight for read */
   font-size: 0.875rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-secondary);
+  color: var(--text-secondary); /* Dull color */
 }
 
-.unread .mail-sender {
+/* Bold and dark for unread sender */
+.mail-row-card.unread .mail-sender {
   color: var(--text-primary);
   font-weight: 700;
 }
@@ -403,23 +432,30 @@ body {
 
 .mail-subject {
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-weight: 400; /* Regular font weight for read */
+  color: var(--text-secondary); /* Dull color */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.unread .mail-subject {
+/* Bold and dark for unread subject */
+.mail-row-card.unread .mail-subject {
+  color: var(--text-primary);
   font-weight: 700;
 }
 
 .mail-snippet {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--text-muted); /* Dull color for read snippet */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Darker color for unread snippet */
+.mail-row-card.unread .mail-snippet {
+  color: var(--text-secondary);
 }
 
 .mail-meta {
@@ -743,4 +779,102 @@ body {
   .mail-sender {
     width: 120px;
   }
+}
+
+/* Add Folder Styling */
+.add-folder-section {
+  margin-top: 0.5rem;
+}
+
+.add-folder-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  text-align: left;
+  border-radius: 6px;
+  transition: var(--transition-fast);
+}
+
+.add-folder-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.add-folder-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background-color: var(--bg-hover);
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  margin-top: 0.25rem;
+}
+
+.add-folder-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  transition: var(--transition-fast);
+}
+
+.add-folder-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.add-folder-error {
+  font-size: 0.75rem;
+  color: var(--color-error);
+  margin-top: 0.25rem;
+}
+
+.add-folder-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.btn-create, .btn-cancel {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-create {
+  background-color: var(--accent-primary);
+  color: #FFFFFF;
+  border: none;
+}
+
+.btn-create:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-cancel {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-cancel:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
 }

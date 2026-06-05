@@ -45,6 +45,10 @@ export const folderService = {
     const response = await api.get('/api/folders');
     return response.data;
   },
+  addFolder: async (label, color) => {
+    const response = await api.post('/api/folders', { label, color });
+    return response.data;
+  },
   getStats: async () => {
     const response = await api.get('/api/stats');
     return response.data;

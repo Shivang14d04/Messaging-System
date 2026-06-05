@@ -1,5 +1,6 @@
 package org.shivang.inboxapplication.controller;
 
+import org.shivang.inboxapplication.dto.FolderRequestDto;
 import org.shivang.inboxapplication.dto.FolderResponseDto;
 import org.shivang.inboxapplication.model.Folder;
 import org.shivang.inboxapplication.service.FolderService;
@@ -49,6 +50,35 @@ public class FolderController {
         response.put("defaultFolders", defaultFolderDtos);
         response.put("userFolders", customFolderDtos);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addFolder(
+            @RequestBody FolderRequestDto payload,
+            @AuthenticationPrincipal OAuth2User principal
+    ) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        String userId = principal.getAttribute("login");
+        String label = payload.getLabel();
+        String color = payload.getColor();
+
+        if (label == null || label.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Folder name cannot be empty");
+        }
+        if (color == null || color.trim().isEmpty()) {
+            color = "blue";
+        }
+
+        if (folderService.folderExists(userId, label)) {
+            return ResponseEntity.badRequest().body("Folder with this name already exists");
+        }
+
+        Folder savedFolder = folderService.addFolder(userId, label, color);
+        FolderResponseDto response = new FolderResponseDto(savedFolder.getLabel(), savedFolder.getColor());
         return ResponseEntity.ok(response);
     }
 }

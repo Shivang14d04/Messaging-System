@@ -67,4 +67,20 @@ public class FolderService {
 
         return response;
     }
+
+    public boolean folderExists(String userId, String label) {
+        if (label == null) {
+            return false;
+        }
+        if (fetchDefaultFolders(userId).stream().anyMatch(f -> f.getLabel().equalsIgnoreCase(label))) {
+            return true;
+        }
+        return folderRepo.findAllById(userId).stream()
+                .anyMatch(f -> f.getLabel().equalsIgnoreCase(label));
+    }
+
+    public Folder addFolder(String userId, String label, String color) {
+        Folder folder = new Folder(userId, label, color);
+        return folderRepo.save(folder);
+    }
 }

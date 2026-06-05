@@ -57,12 +57,20 @@ const Inbox = ({ activeFolder, onStatsRefresh }) => {
     );
   }
 
+  const unreadCount = emails.filter(e => !e.read).length;
+
   return (
     <div className="mail-list-pane">
       <div className="pane-header">
         <h2 className="pane-title">{activeFolder}</h2>
-        <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-          {emails.length} message(s)
+        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <span>{emails.length} message(s)</span>
+          {unreadCount > 0 && (
+            <>
+              <span style={{ color: 'var(--border-color)' }}>•</span>
+              <span style={{ fontWeight: '600', color: 'var(--accent-primary)' }}>{unreadCount} unread</span>
+            </>
+          )}
         </span>
       </div>
 

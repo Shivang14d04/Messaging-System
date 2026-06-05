@@ -37,6 +37,19 @@ function App() {
     }
   };
 
+  const fetchFolders = async () => {
+    try {
+      const [foldersData, statsData] = await Promise.all([
+        folderService.getFolders(),
+        folderService.getStats()
+      ]);
+      setFolders(foldersData || { defaultFolders: [], userFolders: [] });
+      setStats(statsData || {});
+    } catch (err) {
+      console.error('Failed to load folders:', err);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -84,6 +97,7 @@ function App() {
             onFolderChange={setActiveFolder}
             collapsed={sidebarCollapsed}
             isOpen={sidebarMobileOpen}
+            onFoldersRefresh={fetchFolders}
           />
 
           <main style={{ flex: 1, height: '100%', overflow: 'hidden' }} onClick={() => setSidebarMobileOpen(false)}>
