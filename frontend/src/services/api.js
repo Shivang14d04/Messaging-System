@@ -10,14 +10,38 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const authService = {
+  login: async (username, password) => {
+    const response = await api.post('/api/auth/login', { username, password });
+    if (response.data && response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
+    return response.data;
+  },
+  register: async (username, password) => {
+    const response = await api.post('/api/auth/register', { username, password });
+    return response.data;
+  },
   getMe: async () => {
     const response = await api.get('/api/auth/me');
     return response.data;
   },
   logout: () => {
-
-    window.location.href = `${API_BASE_URL}/logout`;
+    localStorage.removeItem('token');
+    window.location.reload();
   },
 };
 
@@ -36,6 +60,14 @@ export const emailService = {
   },
   markAsRead: async (id, folder) => {
     const response = await api.put(`/api/emails/${id}/read`, null, { params: { folder } });
+    return response.data;
+  },
+  deleteEmails: async (folder, emailIds) => {
+    const response = await api.delete(`/api/emails`, { data: { folder, emailIds } });
+    return response.data;
+  },
+  copyEmails: async (sourceFolder, targetFolder, emailIds) => {
+    const response = await api.post(`/api/emails/copy`, { sourceFolder, targetFolder, emailIds });
     return response.data;
   },
 };

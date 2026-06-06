@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.shivang.inboxapplication.model.UserPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,13 +26,13 @@ public class FolderController {
 
     @GetMapping
     public ResponseEntity<?> getFolders(
-            @AuthenticationPrincipal OAuth2User principal
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
 
-        String userId = principal.getAttribute("login");
+        String userId = principal.getUsername();
         Map<String, Object> folderData = folderService.getFolderData(userId);
 
         List<Folder> folders = (List<Folder>) folderData.get("folders");
@@ -56,13 +56,13 @@ public class FolderController {
     @PostMapping
     public ResponseEntity<?> addFolder(
             @RequestBody FolderRequestDto payload,
-            @AuthenticationPrincipal OAuth2User principal
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
 
-        String userId = principal.getAttribute("login");
+        String userId = principal.getUsername();
         String label = payload.getLabel();
         String color = payload.getColor();
 

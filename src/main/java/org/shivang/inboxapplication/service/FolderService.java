@@ -68,12 +68,23 @@ public class FolderService {
         return response;
     }
 
-    public void addFolder(
+    public boolean folderExists(String userId, String label) {
+        if (label == null) {
+            return false;
+        }
+        if (fetchDefaultFolders(userId).stream().anyMatch(f -> f.getLabel().equalsIgnoreCase(label))) {
+            return true;
+        }
+        return folderRepo.findAllById(userId).stream()
+                .anyMatch(f -> f.getLabel().equalsIgnoreCase(label));
+    }
+
+    public Folder addFolder(
             String userId,
             String label,
             String color
     ) {
-        folderRepo.save(new Folder(userId, label, color));
         unreadEmailStatsRepo.save(new UnreadEmailStats(userId, label, 0));
+        return folderRepo.save(new Folder(userId, label, color));
     }
 }

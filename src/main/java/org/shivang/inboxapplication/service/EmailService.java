@@ -136,6 +136,41 @@ public class EmailService {
                 + email.getBody();
     }
 
+    public void deleteEmails(String userId, String folder, List<UUID> emailIds) {
+        for (UUID emailId : emailIds) {
+            EmailListItemKey key = new EmailListItemKey(userId, folder, emailId);
+            emailListItemRepo.findById(key).ifPresent(item -> {
+                if (!item.isRead()) {
+                    unreadEmailStatsRepo.decrementUnreadCount(userId, folder);
+                }
+                emailListItemRepo.delete(item);
+            });
+        }
+    }
+
+    public void copyEmails(String userId, String sourceFolder, String targetFolder, List<UUID> emailIds) {
+        for (UUID emailId : emailIds) {
+            EmailListItemKey sourceKey = new EmailListItemKey(userId, sourceFolder, emailId);
+            emailListItemRepo.findById(sourceKey).ifPresent(item -> {
+                EmailListItemKey targetKey = new EmailListItemKey(userId, targetFolder, emailId);
+                if (!emailListItemRepo.existsById(targetKey)) {
+                    EmailListItem newItem = new EmailListItem();
+                    newItem.setKey(targetKey);
+                    newItem.setFrom(item.getFrom());
+                    newItem.setTo(item.getTo());
+                    newItem.setSubject(item.getSubject());
+                    newItem.setRead(item.isRead());
+                    
+                    emailListItemRepo.save(newItem);
+                    
+                    if (!item.isRead()) {
+                        unreadEmailStatsRepo.incrementUnreadCount(userId, targetFolder);
+                    }
+                }
+            });
+        }
+    }
+
     private EmailListItem createEmailListItem(
             String owner,
             String folder,

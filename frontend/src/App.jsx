@@ -52,6 +52,13 @@ function App() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token');
+      if (urlToken) {
+        localStorage.setItem('token', urlToken);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       try {
         const data = await authService.getMe();
         if (data.authenticated) {
@@ -71,6 +78,22 @@ function App() {
     checkAuth();
   }, []);
 
+  const handleLoginSuccess = async () => {
+    try {
+      const data = await authService.getMe();
+      if (data.authenticated) {
+        setUser(data);
+        setAuthenticated(true);
+        await Promise.all([
+          folderService.getFolders().then(setFolders),
+          folderService.getStats().then(setStats)
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to load user info after login:', err);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="loading-container">
@@ -81,7 +104,7 @@ function App() {
   }
 
   if (!authenticated) {
-    return <Login />;
+    return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
@@ -108,6 +131,7 @@ function App() {
                   <Inbox
                     activeFolder={activeFolder}
                     onStatsRefresh={fetchStats}
+                    userFolders={folders.userFolders}
                   />
                 }
               />

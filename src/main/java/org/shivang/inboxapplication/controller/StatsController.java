@@ -4,7 +4,7 @@ import org.shivang.inboxapplication.service.FolderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.shivang.inboxapplication.model.UserPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +24,13 @@ public class StatsController {
 
     @GetMapping
     public ResponseEntity<?> getStats(
-            @AuthenticationPrincipal OAuth2User principal
+            @AuthenticationPrincipal UserPrincipal principal
     ) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
 
-        String userId = principal.getAttribute("login");
+        String userId = principal.getUsername();
         Map<String, Integer> stats = folderService.mapCountToLabels(userId);
 
         return ResponseEntity.ok(stats);
