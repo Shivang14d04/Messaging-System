@@ -11,8 +11,8 @@ The backend is built following a clean **Controller -> Service -> Repository -> 
 ### Core Technology Stack
 - **Framework**: Spring Boot
 - **Database**: Apache Cassandra / DataStax Astra DB (Spring Data Cassandra)
-- **Security**: Spring Security OAuth2 Client (Stateful OAuth Session)
-- **Cross-Origin Resource Sharing**: CORS mapping with `http://localhost:5173` enabling cookies across origins.
+- **Security**: Spring Security (Stateless JWT token architecture, custom credentials login/registration, and GitHub OAuth2 mapping)
+- **Cross-Origin Resource Sharing**: CORS mapping with `http://localhost:5173`.
 
 ---
 
